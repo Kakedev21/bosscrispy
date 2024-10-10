@@ -2,10 +2,10 @@ import axios from "axios";
 import useAuthStore from "@/store/authStore";
 
 const api = axios.create({
-  baseURL: "https://bosscrispy-api.iamjohn.dev/api",
+  baseURL: "https://bosscrispy.online/api",
   headers: {
     Accept: "application/json",
-    "Content-Type": "multipart/form-data",
+    "Content-Type": "application/json",
   },
 });
 

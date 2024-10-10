@@ -3,6 +3,9 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthState {
+  name: string | null;
+  email: string | null;
+  phone_number: string | null;
   token: string | null;
   message: string | null;
   type: string | null;
@@ -21,6 +24,9 @@ const useAuthStore = create<AuthState>()(
       type: null,
       role: null,
       user_id: null,
+      name: null,
+      email: null,
+      phone_number: null,
       isAuthenticated: false,
       setAuth: (authData: Partial<AuthState>) => set({ ...authData, isAuthenticated: true }),
       logout: () =>
@@ -30,6 +36,9 @@ const useAuthStore = create<AuthState>()(
           type: null,
           role: null,
           user_id: null,
+          name: null,
+          email: null,
+          phone_number: null,
           isAuthenticated: false,
         }),
     }),

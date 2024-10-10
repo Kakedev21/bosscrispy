@@ -1,5 +1,8 @@
 import type { UserLogin, UserRegister } from "@/typescript/user";
 import api from "./config";
+import { PaymentType } from "@/typescript/payment";
+
+const yearDayMonthDate = (date = new Date()) => date.toISOString().slice(0, 10).replace(/-/g, "-").split("-").reverse().join("-");
 
 export const authAPI = {
   login: (credentials: UserLogin) => api.post("/auth/login", credentials),
@@ -12,8 +15,9 @@ export const userAPI = {
 };
 
 export const orders = {
-  getOrder: (id: string) => api.get(`/orders/user/${id}`),
-  createOrder: (data: any) => api.post("/boss/orders", data),
+  getOrder: (id: string) => api.post(`/orders/customer-list/${id}`),
+  createOrder: (data: any) => api.post("/orders/store", data),
+  getAvailableTime: () => api.get(`https://bosscrispy.online/time/${yearDayMonthDate}`),
 };
 
 export const categoriesAPI = {
@@ -22,6 +26,10 @@ export const categoriesAPI = {
 };
 
 export const menuAPI = {
-  getMenus: () => api.get("/boss/menu-items"),
-  getMenu: (id: string) => api.get(`/boss/menu-items/${id}`),
+  getMenus: () => api.get("/boss/items"),
+  getMenu: (id: string) => api.get(`/boss/items/${id}`),
+};
+
+export const payment = {
+  forTest: (data: PaymentType) => api.post("/payments/create", data),
 };

@@ -20,11 +20,17 @@ const Home = () => {
   };
 
   const { menuItems, isLoading, fetchMenuItems } = useMenuStore();
+  const [searchQuery, setSearchQuery] = useState('');
+
   const [isAddCart, setIsAddCart] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItemType | null>();
   const [quantity, setQuantity] = useState(1);
 
-  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  const incrementQuantity = () => {
+    if (quantity < selectedItem?.stock) {
+      setQuantity((prevQuantity) => prevQuantity + 1);
+    }
+  };
   const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
 
   useEffect(() => {
@@ -33,6 +39,11 @@ const Home = () => {
 
   const totalPrice = selectedItem ? selectedItem.price * quantity : 0;
 
+  const filteredMenuItems = menuItems.filter(item =>
+    item.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+  );
+
+
   return (
     <View className="flex-1 bg-red-600 px-5">
       <View className="flex-row justify-between items-center mt-8">
@@ -40,7 +51,7 @@ const Home = () => {
 
         <TouchableOpacity onPress={toggleLogout}>
           <Image
-            source={{ uri: 'https://th.bing.com/th/id/OIP.qWvJh1xJywU_rTD_3e-YmwHaEK?w=306&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7' }}
+            source={{ uri: 'https://scontent.xx.fbcdn.net/v/t1.15752-9/457496668_931293689045037_1004172138103515310_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeHGxW1drSExspZ9DAXOUe4VGvbGKVR-GFwa9sYpVH4YXK8JmIzBFffABIPzU8b2j35IjqSBW40_0ZzAwV6AEOd8&_nc_ohc=LzZfryeriuEQ7kNvgHznlE_&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&_nc_gid=AHTFBarJbiCOsQ9GqFX1YDM&oh=03_Q7cD1QF_8-sbbEjNaMJ4NhSBfCRrpW4yrsuYx2uA2gJyx7gPuQ&oe=67143884' }}
             className="w-10 h-10 rounded-full"
           />
         </TouchableOpacity>
@@ -60,6 +71,8 @@ const Home = () => {
         <TextInput
           placeholder="Search here"
           className="ml-2 flex-1"
+          value={searchQuery}
+          onChangeText={text => setSearchQuery(text)}
         />
       </View>
 
@@ -78,13 +91,18 @@ const Home = () => {
         {isLoading ? (
           <ActivityIndicator size="large" color="white" />
         ) : (
-          menuItems.map((item) => (
-            <TouchableOpacity disabled={item.stock === 0} onPress={() => {
-              setSelectedItem(item);
-              setIsAddCart(true);
-            }} key={item.id} className={`${item.stock >= 1 ? 'bg-white' : 'bg-gray-400'} rounded-lg p-4 mb-5 w-full`}>
+          filteredMenuItems.map((item) => (
+            <TouchableOpacity
+              disabled={item.stock <= 0}
+              onPress={() => {
+                setSelectedItem(item);
+                setIsAddCart(true);
+              }}
+              key={item.id}
+              className={`${item.stock >= 1 ? 'bg-white' : 'bg-gray-400'} rounded-lg p-4 mb-5 w-full`}
+            >
               <Image
-                source={{ uri: `${IMAGE_BASE_URL}${item.image}` }}
+                source={{ uri: `${IMAGE_BASE_URL}${item.thumbnail}` }}
                 className="w-full h-40 rounded-lg mb-3 object-cover"
               />
               {item.stock >= 1 ? (
@@ -93,9 +111,8 @@ const Home = () => {
                   <Text className="text-gray-600 text-center">PHP {item.price}</Text>
                 </>
               ) : (
-                <Text>Out of stock</Text>
+                <Text className="text-center">Out of stock</Text>
               )}
-
             </TouchableOpacity>
           ))
         )}
@@ -113,14 +130,14 @@ const Home = () => {
               <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
 
-            <Image source={{ uri: `${IMAGE_BASE_URL}${selectedItem?.image}` }} className="w-full h-72 object-cover" />
+            <Image source={{ uri: `${IMAGE_BASE_URL}${selectedItem?.thumbnail}` }} className="w-full h-72 object-cover" />
 
             <View className="bg-white rounded-t-3xl p-5 flex-1 -mt-5">
               <Text className="text-2xl font-bold text-orange-500">PHP {selectedItem?.price.toFixed(2)}</Text>
               <Text className="text-3xl font-bold my-2">{selectedItem?.name}</Text>
-              <Text className='text-base'>{selectedItem?.description}</Text>
+              <Text className='text-xs'>{selectedItem?.description}</Text>
 
-              <View className='mt-20'>
+              <View className='mt-5'>
                 <View className="flex-row items-center justify-center my-5">
                   <TouchableOpacity onPress={decrementQuantity} className="bg-red-600 w-10 h-10 rounded-full items-center justify-center">
                     <Text className="text-white text-2xl font-bold">-</Text>

@@ -1,0 +1,21 @@
+{
+  "build": {
+    "test": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "defense": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "defense2": {
+      "developmentClient": true
+    },
+    "defense3": {
+      "distribution": "internal"
+    },
+    "production": {}
+  }
+}

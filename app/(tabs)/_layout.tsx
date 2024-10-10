@@ -47,17 +47,6 @@ export default function TabLayout() {
           tabBarInactiveTintColor: 'gray'
         }}
       />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'profile',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
-          ),
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray'
-        }}
-      />
     </Tabs>
   );
 }
